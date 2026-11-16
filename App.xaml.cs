@@ -1,17 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿namespace PM2E230145;
 
-namespace PM2E230145
+public partial class App : Application
 {
-    public partial class App : Application
+    public App()
     {
-        public App()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new MainPage());
-        }
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new Window(new NavigationPage(new MainPage()));
     }
 }

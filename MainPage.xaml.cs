@@ -1,26 +1,88 @@
-﻿namespace PM2E230145
+﻿using System.Net;
+
+namespace PM2E230145;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    private int intentosFallidos = 0;
+
+    public MainPage()
     {
-        int count = 0;
+        InitializeComponent();
+    }
 
-        public MainPage()
+    private void MostrarContrasena_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        txtContrasena.IsPassword = !e.Value;
+    }
+
+    private async void BtnLogin_Clicked(object sender, EventArgs e)
+    {
+        string correo = txtCorreo.Text?.Trim() ?? "";
+        string clave = txtContrasena.Text ?? "";
+
+        if (correo == "" || clave == "")
         {
-            InitializeComponent();
+            lblError.Text = "Ingresa tu correo y contraseña.";
+            lblError.IsVisible = true;
+            return;
         }
 
-        private void OnCounterClicked(object? sender, EventArgs e)
-        {
-            count++;
+        btnLogin.IsEnabled = false;
+        indicadorCarga.IsVisible = true;
+        indicadorCarga.IsRunning = true;
+        lblError.IsVisible = false;
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
+        try
+        {
+            HttpStatusCode resultado = await ApiService.LoginAsync(correo, clave);
+
+            if (resultado == HttpStatusCode.OK)
+            {
+                intentosFallidos = 0;
+                await Navigation.PushAsync(new Profile());
+            }
+            else if (resultado == HttpStatusCode.Unauthorized)
+            {
+                intentosFallidos++;
+                lblError.Text = "Correo o contraseña incorrectos.";
+                lblError.IsVisible = true;
+
+                if (intentosFallidos >= 3)
+                {
+                    btnLogin.IsEnabled = false;
+                    await DisplayAlert("Acceso bloqueado", "Alcanzaste los tres intentos permitidos.", "Aceptar");
+                    return;
+                }
+            }
             else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            {
+                lblError.Text = "La API respondió con un error: " + resultado;
+                lblError.IsVisible = true;
+            }
         }
+        catch (HttpRequestException)
+        {
+            lblError.Text = "No se pudo conectar con la API. Comprueba que esté ejecutándose.";
+            lblError.IsVisible = true;
+        }
+        catch (TaskCanceledException)
+        {
+            lblError.Text = "La conexión tardó demasiado.";
+            lblError.IsVisible = true;
+        }
+        catch (Exception ex)
+        {
+            lblError.Text = ex.Message;
+            lblError.IsVisible = true;
+        }
+        finally
+        {
+            indicadorCarga.IsRunning = false;
+            indicadorCarga.IsVisible = false;
 
-       
+            if (intentosFallidos < 3)
+                btnLogin.IsEnabled = true;
+        }
     }
 }

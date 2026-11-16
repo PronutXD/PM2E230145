@@ -1,41 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PM2E230145.MainPage">
+             x:Class="PM2E230145.MainPage"
+             Title="Iniciar sesión">
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-
+        <VerticalStackLayout Padding="30,30" Spacing="20">
             <Label FontAttributes="Bold" FontSize="32" Text="Bienvenido"
-                   HorizontalOptions="Center"/>
+                   HorizontalOptions="Center" />
 
-            <Label FontAttributes="Bold,Italic" FontSize="16" Text="Inicia sesion para continuar"
-                   HorizontalOptions="Center"/>
+            <Label FontAttributes="Bold,Italic" FontSize="16"
+                   Text="Inicia sesión para continuar"
+                   HorizontalOptions="Center" />
 
-            <Entry x:Name="txtCorreo" Placeholder="Correo electronico" Keyboard="Email"
-            BackgroundColor="White" TextColor="Black"/>
+            <Entry x:Name="txtCorreo" Placeholder="Correo electrónico"
+                   Keyboard="Email" BackgroundColor="White" TextColor="Black" />
 
-            <Entry x:Name="txtContrasena" Placeholder="Contraseña" IsPassword="True" 
-            BackgroundColor="White" TextColor="Black"/>
+            <Entry x:Name="txtContrasena" Placeholder="Contraseña"
+                   IsPassword="True" BackgroundColor="White" TextColor="Black" />
 
-            <HorizontalStackLayout>
-                <CheckBox x:Name="chkMostrarContrasena"/>
-                <Label Text="Mostrar contraseña" VerticalOptions="Center"/>
+            <HorizontalStackLayout Spacing="8">
+                <CheckBox x:Name="chkMostrarContrasena"
+                          CheckedChanged="MostrarContrasena_CheckedChanged" />
+                <Label Text="Mostrar contraseña" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
-            <Label x:Name="lblError" TextColor="Red" IsVisible="False" HorizontalOptions="Center"/>
+            <Label x:Name="lblError" TextColor="Red"
+                   IsVisible="False" HorizontalOptions="Center" />
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me" 
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Fill" />
-            
-            
+            <ActivityIndicator x:Name="indicadorCarga" IsRunning="False"
+                               IsVisible="False" />
+
+            <Button x:Name="btnLogin" Text="Iniciar sesión"
+                    Clicked="BtnLogin_Clicked" />
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>
